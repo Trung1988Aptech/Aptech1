@@ -74,18 +74,22 @@ void analyze(Person *people, int count)
             dictionary[nationality] = dictionary[nationality] + 1;
         }
         */
-       dictionary[nationality] = (dictionary.find(nationality) == dictionary.end) ? 1 : dictionary[nationality] + 1;
+       dictionary[nationality] = dictionary.find(nationality) == dictionary.end() 
+                                    ? 1 : dictionary[nationality] + 1;
     }
 
     // In kết quả
     cout << "Nationality Count:" << std::endl;
     for (auto& item : dictionary) {        
         //cout << "There are "<< item.second << " people from " <<item.first<<endl;        
+        /*
         if(item.second <=1 ) {
             cout << "There are "<< item.second << " person from " <<item.first<<endl;        
         } else {
             cout << "There are "<< item.second << " people from " <<item.first<<endl;        
         }
+        */
+       cout << "There are "<< item.second <<(item.second <=1 ? "person" : "people")<<" from " <<item.first<<endl;  
     }
 }
 void input(Person* people, int count) {
