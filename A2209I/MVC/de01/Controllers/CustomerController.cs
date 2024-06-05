@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using de01.Models;
+using de01.Utilities;
 
 namespace de01.Controllers
 {
@@ -18,11 +19,13 @@ namespace de01.Controllers
             _context = context;
         }
 
-        // GET: Customer
-        public async Task<IActionResult> Index()
+        // GET: Customer        
+
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var dataContext = _context.Customers.Include(c => c.Class);
-            return View(await dataContext.ToListAsync());
+            var customers = _context.Customers.Include(c => c.Klass);
+            var pagedData = await PaginatedList<Customer>.CreateAsync(customers.AsNoTracking(), page, pageSize);
+            return View(pagedData);
         }
 
         // GET: Customer/Details/5
@@ -34,7 +37,7 @@ namespace de01.Controllers
             }
 
             var customer = await _context.Customers
-                .Include(c => c.Class)
+                .Include(c => c.Klass)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
@@ -130,7 +133,7 @@ namespace de01.Controllers
             }
 
             var customer = await _context.Customers
-                .Include(c => c.Class)
+                .Include(c => c.Klass)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {

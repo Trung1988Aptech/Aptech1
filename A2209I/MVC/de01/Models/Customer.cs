@@ -45,7 +45,7 @@ namespace de01.Models
         [Column("ClassId")]
         public int ClassId { get; set; }
 
-        public Klass Class { get; set; }
+        public Klass Klass { get; set; }
     }
 
 }

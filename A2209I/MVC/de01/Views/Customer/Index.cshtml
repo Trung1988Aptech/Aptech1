@@ -1,4 +1,5 @@
-﻿@model IEnumerable<de01.Models.Customer>
+﻿@using de01.Utilities;
+@model PaginatedList<Customer>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,28 +14,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Fullname)
+                @Html.DisplayNameFor(model => model[0].Fullname)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Birthday)
+                @Html.DisplayNameFor(model => model[0].Birthday)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+                @Html.DisplayNameFor(model => model[0].Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
+                @Html.DisplayNameFor(model => model[0].Username)
+            </th>            
             <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConfirmPassword)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Class)
+                @Html.DisplayNameFor(model => model[0].Klass)
             </th>
             <th></th>
         </tr>
@@ -57,14 +52,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.ConfirmPassword)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Class.ClassName)
+                @Html.DisplayFor(modelItem => item.Klass.ClassName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -75,3 +68,15 @@
 }
     </tbody>
 </table>
+<div>
+    Page @(Model.PageIndex) of @(Model.TotalPages)
+
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" class="btn btn-default">Previous</a>
+    }
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" class="btn btn-default">Next</a>
+    }
+</div>
