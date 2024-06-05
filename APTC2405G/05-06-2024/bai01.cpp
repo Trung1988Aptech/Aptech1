@@ -79,7 +79,7 @@ void analyze(Person *people, int count)
     }
 
     // In kết quả
-    cout << "Nationality Count:" << std::endl;
+    cout << "Nationality Count:" << endl;
     for (auto& item : dictionary) {        
         //cout << "There are "<< item.second << " people from " <<item.first<<endl;        
         /*
