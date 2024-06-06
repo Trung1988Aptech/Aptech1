@@ -103,16 +103,7 @@ void input(Product* products, int count) {
         //products[i] = eachProduct;
     }
 }
-void display(Product* products, int count) {  
-    sort(products, count);
-    for (int i = 0; i < count; i++) {
-        /*
-        Product eachProduct = products[i];
-        eachProduct.display();
-        */
-       products[i].display();
-    }
-}
+
 void sort(Product* products, int count) {    
     //đã sắp xếp thì phải "so sánh"
     //đã so sánh thì phải có tiêu chí(theo property nào)
@@ -125,6 +116,16 @@ void sort(Product* products, int count) {
                 products[j] = temp;
             }
         }
+    }
+}
+void display(Product* products, int count) {  
+    sort(products, count);
+    for (int i = 0; i < count; i++) {
+        /*
+        Product eachProduct = products[i];
+        eachProduct.display();
+        */
+       products[i].display();
     }
 }
 void find(Product* products, int count) {  
@@ -147,6 +148,26 @@ void find(Product* products, int count) {
         
     }
 }
+void calculateFibonacy() {
+    int n;
+    cout << "n = "<<endl;
+    cin >> n;
+    cin.ignore();
+    int x0 = 0;
+    int x1 = 1;
+    for(int i = 0; i < n; i++) {
+        if(i > 1) {
+            int sum = x0 + x1;
+            x0 = x1;
+            x1 = sum;
+            cout << sum<<", ";
+        } else {
+            if(i == 1) {
+                cout << x1<<", ";
+            }
+        }
+    }
+}
 int main()
 {
 
@@ -157,6 +178,7 @@ int main()
     Product *products2;
     char fileName[100];
     //bool hasChoose1 = false;
+    calculateFibonacy();
     while (choice != 7)
     {
         cout << "+------------------------------------------------------------------+" << endl;
@@ -215,20 +237,19 @@ int main()
         cout << "- Please clear the screen ! (press 'c', 'C')" << endl;
         cout << "Your choice:" << endl;
         getline(cin, answer);
-        if (answer == "y" || answer == "Y")
-        {
-        }
-        else if (answer == "n" || answer == "N")
-        {
+       if (answer == "y" || answer == "Y") {
+            // Tiếp tục thực hiện chương trình
+            continue;
+        } else if (answer == "n" || answer == "N") {
+            // Thoát chương trình
             break;
+        } else if (answer == "c" || answer == "C") {
+            // Xóa màn hình
+            system("cls");
+        } else {
+            // Thông báo khi nhập không hợp lệ
+            cout << "Please enter y, n, c" << endl;
         }
-        else if (answer == "c" || answer == "C")
-        {
-            // clear man hinh
-        }
-        else
-        {
-            cout << "Please enter y, n, c";
-        }
+        
     }
 }
