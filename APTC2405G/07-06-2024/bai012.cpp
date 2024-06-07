@@ -49,8 +49,7 @@ void input(Student* students, int count) {
         while (true) {
             printf("Mark: ");
             scanf("%f", students[i].mark);//cin
-            getchar();  // Consume newline character
-            //... = spread operator
+            getchar();  // Consume newline character            
 
             if (students[i].mark < 0 || students[i].mark > 10) {
                 printf("Student mark must be between 0 and 10.\n");
