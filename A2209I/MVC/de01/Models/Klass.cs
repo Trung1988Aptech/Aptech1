@@ -7,6 +7,7 @@ namespace de01.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("ClassId")]
         public int Id { get; set; }
 
         [Required]

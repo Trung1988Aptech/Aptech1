@@ -24,7 +24,8 @@ namespace de01.Controllers
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var customers = _context.Customers.Include(c => c.Klass);
-            var pagedData = await PaginatedList<Customer>.CreateAsync(customers.AsNoTracking(), page, pageSize);
+            var pagedData = await PaginatedList<Customer>.CreateAsync(
+                customers.AsNoTracking(), page, pageSize);
             return View(pagedData);
         }
 
@@ -50,7 +51,7 @@ namespace de01.Controllers
         // GET: Customer/Create
         public IActionResult Create()
         {
-            ViewData["ClassId"] = new SelectList(_context.Klasses, "Id", "ClassName");
+            ViewBag.ClassId = new SelectList(_context.Klasses, "Id", "ClassName");
             return View();
         }
 
@@ -72,6 +73,7 @@ namespace de01.Controllers
         }
 
         // GET: Customer/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,7 +86,7 @@ namespace de01.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClassId"] = new SelectList(_context.Klasses, "Id", "ClassName", customer.ClassId);
+            ViewBag.ClassId = new SelectList(_context.Klasses, "Id", "ClassName", customer.ClassId);
             return View(customer);
         }
 

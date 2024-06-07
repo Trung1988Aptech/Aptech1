@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 
 namespace de01.Models
-{    
+{
+    [Table("Customer")]
     public class Customer
     {
         [Key]
@@ -42,6 +43,7 @@ namespace de01.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
+        [ForeignKey("Klass")]
         [Column("ClassId")]
         public int ClassId { get; set; }
 
