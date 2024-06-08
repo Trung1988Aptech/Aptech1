@@ -1,4 +1,6 @@
 using de01.Models;
+using de01.Repositories;
+using de01.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IKlassRepository, KlassRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +33,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Customer}/{action=Index}/{id?}");
 
 app.Run();

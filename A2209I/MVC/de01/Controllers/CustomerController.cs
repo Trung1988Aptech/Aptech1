@@ -7,25 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using de01.Models;
 using de01.Utilities;
+using de01.Services;
 
 namespace de01.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly DataContext _context;
+        private readonly ICustomerService _customerService;
 
-        public CustomerController(DataContext context)
+        public CustomerController(ICustomerService customerService)
         {
-            _context = context;
+            _customerService = customerService;
         }
 
         // GET: Customer        
 
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var customers = _context.Customers.Include(c => c.Klass);
-            var pagedData = await PaginatedList<Customer>.CreateAsync(
-                customers.AsNoTracking(), page, pageSize);
+            var pagedData = await _customerService.GetCustomers(page, pageSize);
             return View(pagedData);
         }
 
@@ -37,9 +36,7 @@ namespace de01.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .Include(c => c.Klass)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var customer = await _customerService.GetCustomerDetails(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -49,9 +46,10 @@ namespace de01.Controllers
         }
 
         // GET: Customer/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.ClassId = new SelectList(_context.Klasses, "Id", "ClassName");
+            var klassSelectList = await _customerService.GetKlassSelectList();
+            ViewBag.ClassId = new SelectList(klassSelectList, "Id", "ClassName");            
             return View();
         }
 
@@ -62,13 +60,15 @@ namespace de01.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Fullname,Birthday,Address,Email,Username,Password,ConfirmPassword,ClassId")] Customer customer)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
+                await _customerService.CreateCustomer(customer);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClassId"] = new SelectList(_context.Klasses, "Id", "ClassName", customer.ClassId);
+            var klassSelectList = await _customerService.GetKlassSelectList();
+            ViewBag.ClassId = new SelectList(klassSelectList, "Id", "ClassName", customer.ClassId);
+            
             return View(customer);
         }
 
@@ -81,12 +81,13 @@ namespace de01.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _customerService.GetCustomerDetails(id.Value);
             if (customer == null)
             {
                 return NotFound();
             }
-            ViewBag.ClassId = new SelectList(_context.Klasses, "Id", "ClassName", customer.ClassId);
+            var klassSelectList = await _customerService.GetKlassSelectList();
+            ViewBag.ClassId = new SelectList(klassSelectList, "Id", "ClassName", customer.ClassId);            
             return View(customer);
         }
 
@@ -106,23 +107,26 @@ namespace de01.Controllers
             {
                 try
                 {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
+                    await _customerService.UpdateCustomer(customer);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
+                    var selectedCustomer = await _customerService.GetCustomerDetails(id);
+
+                    if (selectedCustomer == null)
                     {
                         return NotFound();
-                    }
+                    }                    
                     else
                     {
                         throw;
                     }
-                }
-                return RedirectToAction(nameof(Index));
+                }                
             }
-            ViewData["ClassId"] = new SelectList(_context.Klasses, "Id", "ClassName", customer.ClassId);
+            var klassSelectList = await _customerService.GetKlassSelectList();
+            ViewBag.ClassId = new SelectList(klassSelectList, "Id", "ClassName", customer.ClassId);            
+
             return View(customer);
         }
 
@@ -133,10 +137,8 @@ namespace de01.Controllers
             {
                 return NotFound();
             }
-
-            var customer = await _context.Customers
-                .Include(c => c.Klass)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var customer = await _customerService.GetCustomerDetails(id.Value);
+            
             if (customer == null)
             {
                 return NotFound();
@@ -150,19 +152,8 @@ namespace de01.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer != null)
-            {
-                _context.Customers.Remove(customer);
-            }
-
-            await _context.SaveChangesAsync();
+            await _customerService.DeleteCustomer(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
-        }
+        }        
     }
 }
