@@ -1,32 +1,24 @@
+DROP DATABASE de05;
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'de05')
 BEGIN
     CREATE DATABASE de05;
 END
 USE de05;
 CREATE TABLE Products (
-    Id INT,
+     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Name VARCHAR(255),
     Price DECIMAL(10, 2),
     Description VARCHAR(MAX),
     Quantity INT
 );
 CREATE TABLE Orders (
-    Id INT,
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     OrderDate DATETIME,
     CustomerPhone VARCHAR(15),
     ProductId INT,
     Quantity INT
 );
 
-ALTER TABLE Products
-DROP COLUMN Id;
-GO
-ALTER TABLE Products
-ADD Id INT IDENTITY(1,1) NOT NULL;
-GO
-
-ALTER TABLE Products
-ADD CONSTRAINT PK_Products_Id PRIMARY KEY (Id);
 
 -- Đặt NOT NULL cho cột Name
 ALTER TABLE Products
