@@ -1,5 +1,6 @@
-using bai05.Models;
+ï»¿using bai05.Models;
 using Microsoft.EntityFrameworkCore;
+using bai05.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,6 +21,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -28,9 +39,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Product}/{action=Index}/{id?}");
 
+app.MapProductEndpoints();
+
 app.Run();
 /*
- T?o cho tôi 2 b?ng sau dây, các ràng bu?c vi?t riêng dua vào câu l?nh t?o b?ng: 
+ T?o cho tï¿½i 2 b?ng sau dï¿½y, cï¿½c rï¿½ng bu?c vi?t riï¿½ng dua vï¿½o cï¿½u l?nh t?o b?ng: 
  Create a table named Products with the following columns:
 Id (int, primary key)
 Name (string, required, min length 5, max length 255)
