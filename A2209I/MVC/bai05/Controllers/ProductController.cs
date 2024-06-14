@@ -12,6 +12,7 @@ namespace bai05.Controllers
     public class ProductController : Controller
     {
         private readonly DataContext _context;
+        private const int PageSize = 10;  // Số sản phẩm trên mỗi trang
 
         public ProductController(DataContext context)
         {
@@ -19,9 +20,25 @@ namespace bai05.Controllers
         }
 
         // GET: Product
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Products.ToListAsync());
+            // Tính toán số lượng bỏ qua dựa trên số trang hiện tại
+            int skipAmount = (page - 1) * PageSize;
+
+            // Lấy tổng số sản phẩm
+            int totalProducts = await _context.Products.CountAsync();
+
+            // Tạo một ViewModel nếu cần để chứa dữ liệu sản phẩm và thông tin phân trang
+            var products = await _context.Products
+                .Skip(skipAmount)
+                .Take(PageSize)
+                .ToListAsync();
+
+            // Truyền dữ liệu vào View, có thể kèm theo ViewModel
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProducts / PageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(products);
         }
 
         // GET: Product/Details/5
