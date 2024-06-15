@@ -1,6 +1,8 @@
 ﻿using bai05.Models;
 using Microsoft.EntityFrameworkCore;
 using bai05.Controllers;
+using bai05.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,17 @@ builder.Services.AddDbContext<DataContext>(options =>
 */
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]));
+builder.Services.AddSingleton<IAuthorizationHandler, RoleHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Read", policy => policy.Requirements.Add(new RoleRequirement { Role = "ReadAccess_Custom_System" }));
+});
+
+builder.Services
+    .AddAuthentication()
+    .AddBearerToken();  //👈
+builder.Services.AddAuthorization();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
