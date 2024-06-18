@@ -4,6 +4,37 @@ BEGIN
     CREATE DATABASE de05;
 END
 USE de05;
+
+CREATE TABLE Users (
+    [Id]                   NVARCHAR (450)    NOT NULL,
+    [UserName]             NVARCHAR (256)    NULL,    
+    [Email]                NVARCHAR (256)    NULL,    
+    [EmailConfirmed]       BIT               DEFAULT 1,
+    [PasswordHash]         NVARCHAR (MAX)    NULL,
+    [PhoneNumber]          NVARCHAR (MAX)    NULL,
+    [PhoneNumberConfirmed] BIT               NOT NULL,
+    [TwoFactorEnabled]     BIT               NOT NULL,
+    [LockoutEnd]           DATETIMEOFFSET    NULL,
+    [LockoutEnabled]       BIT               NOT NULL,
+    [AccessFailedCount]    INT               NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+CREATE TABLE Roles (
+    [Id]           NVARCHAR(450) NOT NULL,
+    [Name]         NVARCHAR(256) NULL,    
+    [ConcurrencyStamp] NVARCHAR(MAX) NULL,
+    CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+CREATE TABLE UserRoles (
+    [UserId]       NVARCHAR(450) NOT NULL,
+    [RoleId]       NVARCHAR(450) NOT NULL,
+    CONSTRAINT [PK_UserRoles] PRIMARY KEY CLUSTERED ([UserId] ASC, [RoleId] ASC),
+    CONSTRAINT [FK_UserRoles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES Users ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_UserRoles_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES Roles ([Id]) ON DELETE CASCADE
+);
+
 CREATE TABLE Products (
      Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Name VARCHAR(255),
@@ -43,17 +74,6 @@ ADD CONSTRAINT CHK_Products_Price_Min CHECK (Price >= 0);
 ALTER TABLE Products
 ADD CONSTRAINT CHK_Products_Quantity_Min CHECK (Quantity >= 0);
 
-
-ALTER TABLE Orders
-DROP COLUMN Id;
-GO
-ALTER TABLE Orders
-ADD Id INT IDENTITY(1,1) NOT NULL;
-GO
-
-ALTER TABLE Orders
-ADD CONSTRAINT PK_Orders_Id PRIMARY KEY (Id);
-GO
 -- Đặt NOT NULL cho cột CustomerPhone
 ALTER TABLE Orders
 ALTER COLUMN CustomerPhone NVARCHAR(15) NOT NULL;
