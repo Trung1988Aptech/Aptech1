@@ -2,11 +2,12 @@ using de07.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 /**
- dotnet tool install --global dotnet-ef
- dotnet build
- dotnet ef database update
- dotnet ef migrations add AddServiceEntities --context ApplicationDbContext
+dotnet tool install --global dotnet-ef
+dotnet build
+dotnet ef database update
+dotnet ef migrations add AddServiceEntities --context ApplicationDbContext
 dotnet ef database update --context ApplicationDbContext
+
 
  */
 var builder = WebApplication.CreateBuilder(args);
