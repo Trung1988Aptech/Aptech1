@@ -1,4 +1,5 @@
-﻿using de07.Models;
+﻿using de07.Data;
+using de07.Models;
 using de07.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace de07.Controllers
 {
     public class UserController : Controller
-    {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+    {        
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _applicationDbContext;
+        
+
+        public UserController(
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext applicationDbContext
+            )
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _applicationDbContext = applicationDbContext;
+        }
 
         [HttpGet]        
         public async Task<IActionResult> Login()
@@ -30,7 +44,7 @@ namespace de07.Controllers
 
                     if (result.Succeeded)
                     {
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                        return RedirectToAction(nameof(ServiceController.Index), "Service");
                     }
 
                     if (result.IsLockedOut)
@@ -57,7 +71,7 @@ namespace de07.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();  // This will return the Register view
+            return View(new RegisterViewModel());  // This will return the Register view
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -78,7 +92,7 @@ namespace de07.Controllers
                 {
                     // Optionally sign-in the user after registration
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
+                    
                     // Redirect to login or home page after successful registration
                     return RedirectToAction("Index", "Home");
                 }
