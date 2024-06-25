@@ -3,6 +3,7 @@ using de07.Models;
 using de07.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace de07.Controllers
 {
@@ -36,7 +37,9 @@ namespace de07.Controllers
         {            
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _applicationDbContext.Users
+                    .Where(item => item.Email.Equals(model.Email))
+                    .FirstOrDefaultAsync();
                 if (user != null)
                 {
                     // Attempt to sign in the user
@@ -94,7 +97,7 @@ namespace de07.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     
                     // Redirect to login or home page after successful registration
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Service");
                 }
                 foreach (var error in result.Errors)
                 {

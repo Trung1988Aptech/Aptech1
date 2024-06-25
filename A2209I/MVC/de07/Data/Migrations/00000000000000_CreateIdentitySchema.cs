@@ -30,6 +30,7 @@ namespace de07.Data.Migrations
                     AddressHome = table.Column<string>(nullable: true), // Thêm cột mới
                     PhoneHome = table.Column<string>(nullable: true),   // Thêm cột mới
                     Job = table.Column<string>(nullable: true),          // Thêm cột mới
+
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
@@ -49,7 +50,7 @@ namespace de07.Data.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
-
+            //migrationBuilder.AddColumn("dbo.AspNetUsers", "Discriminator", c => c.String(nullable: false, maxLength: 128));
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new

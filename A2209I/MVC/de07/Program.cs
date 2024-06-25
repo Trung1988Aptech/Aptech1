@@ -1,4 +1,4 @@
-using de07.Data;
+﻿using de07.Data;
 using de07.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,27 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+// Cấu hình tùy chỉnh cho mật khẩu
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Đặt độ dài mật khẩu tối thiểu là 8 ký tự
+    options.Password.RequiredLength = 5;
+
+    // Yêu cầu mật khẩu phải có ít nhất một chữ hoa
+    options.Password.RequireUppercase = false;
+
+    // Yêu cầu mật khẩu phải có ít nhất một chữ thường
+    options.Password.RequireLowercase = true;
+
+    // Yêu cầu mật khẩu phải có ít nhất một chữ số
+    options.Password.RequireDigit = true;
+
+    // Yêu cầu mật khẩu phải có ít nhất một ký tự đặc biệt
+    options.Password.RequireNonAlphanumeric = false;
+
+    // Yêu cầu xác nhận mật khẩu khi đăng ký
+    options.Password.RequiredUniqueChars = 1;
+});
 /*
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
