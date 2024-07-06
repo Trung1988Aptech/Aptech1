@@ -3,7 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
 
+var MyAllowSpecificOrigins = "_MyAllowSubdomainPolicy";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("*")
+                   .AllowAnyHeader();
+        });
+});
 /**
 dotnet tool install --global dotnet-ef
 dotnet build
