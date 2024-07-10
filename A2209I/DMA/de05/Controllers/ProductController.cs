@@ -22,10 +22,35 @@ namespace de05.Controllers
 
         // GET: api/Product
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts
+            (int pageNumber = 1, int pageSize = 10)
         {
-            return await _context.Products.ToListAsync();
+            // Calculate the number of records to skip
+            int skip = (pageNumber - 1) * pageSize;
+
+            // Get the total number of products
+            int totalProducts = await _context.Products.CountAsync();
+
+            // Retrieve the products with paging
+            var products = await _context.Products
+                                         .Skip(skip)
+                                         .Take(pageSize)
+                                         .ToListAsync();
+
+            // Optionally, you might want to return additional paging information
+            // such as total number of pages, current page, etc.
+            var response = new
+            {
+                TotalProducts = totalProducts,
+                ProductsPerPage = pageSize,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling((double)totalProducts / pageSize),
+                Products = products
+            };
+
+            return Ok(response);
         }
+
 
         // GET: api/Product/5
         [HttpGet("{id}")]
