@@ -1,32 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import { productService } from './services/productService';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(3); // You can adjust this value
+  const [productsPerPage] = useState(10); // You can adjust this value
+  
+  useEffect(() => {
+    productService.fetchProducts(currentPage, productsPerPage)
+      .then(responseProducts => setProducts(responseProducts))
+      .catch(error => setProducts([]));    
+  }, [currentPage]);
 
-  const fetchProducts = async (pageNumber) => {
+  const handleDelete = async (id) => {
     try {
-      debugger
-      const response = await fetch(`http://localhost:5119/api/Products?pageNumber=${pageNumber}&pageSize=${productsPerPage}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json', // Updated to accept JSON
-        },
+      const response = await fetch(`http://localhost:5119/api/Products/${id}`, {
+        method: 'DELETE',
       });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (response.ok) {
+        setProducts(products.filter(product => product.id !== id));
+      } else {
+        throw new Error('Failed to delete the product.');
       }
-      const data = await response.json();
-      setProducts(data.products); // Adjust based on actual API response structure
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error deleting product:', error);
     }
   };
 
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage]);
+  const handleEdit = (id) => {
+    // Navigate to the edit page or open a modal for editing
+    console.log('Edit product with ID:', id);
+    // For example, you could use navigate from react-router-dom to go to an edit page
+    // navigate(`/edit-product/${id}`);
+  };
 
   // Function to handle page change
   const handlePageChange = (newPage) => {
@@ -45,23 +51,30 @@ function App() {
               <th className="px-6 py-3 border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">Price</th>
               <th className="px-6 py-3 border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">Description</th>
               <th className="px-6 py-3 border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">Quantity</th>
+              <th className="px-6 py-3 border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">Edit</th>
+              <th className="px-6 py-3 border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">Delete</th>
             </tr>
           </thead>
           <tbody>
-            {products?.map((product) => (
+            {products.map((product) => (
               <tr key={product.id}>
                 <td className="px-6 py-4 border-b border-gray-200 text-sm text-black">{product.id}</td>
                 <td className="px-6 py-4 border-b border-gray-200 text-sm text-black">{product.name}</td>
                 <td className="px-6 py-4 border-b border-gray-200 text-sm text-black">{product.price}</td>
                 <td className="px-6 py-4 border-b border-gray-200 text-sm text-black">{product.description}</td>
                 <td className="px-6 py-4 border-b border-gray-200 text-sm text-black">{product.quantity}</td>
+                <td className="px-6 py-4 border-b border-gray-200 text-center">
+                  <button onClick={() => handleEdit(product.id)} className="text-blue-500 hover:text-blue-700">Edit</button>
+                </td>
+                <td className="px-6 py-4 border-b border-gray-200 text-center">
+                  <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700">Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div className="pagination">
-        {/* Simple pagination control */}
         <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
           Previous
         </button>
