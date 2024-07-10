@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import React, { useEffect, useState } from 'react';
 import './App.css'
 
 function App() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Product 1',
-      price: 100,
-      description: 'Description for product 1',
-      quantity: 10,
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: 200,
-      description: 'Description for product 2',
-      quantity: 20,
-    },
-    // Thêm các sản phẩm khác
-  ]);
-
+  const [products, setProducts] = useState([])
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5119/api/Products', {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/plain',
+        },
+      });
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  useEffect(() => {    
+    fetchProducts();
+  }, []);
+  
   return (
     <>
       <h1 className="text-3xl font-bold underline">This is a list of products</h1>

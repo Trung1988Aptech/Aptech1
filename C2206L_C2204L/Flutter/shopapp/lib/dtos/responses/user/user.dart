@@ -11,8 +11,8 @@ class User {
   final String? profileImage;
   final bool isActive;
   final DateTime? dateOfBirth;
-  final int? facebookAccountId;
-  final int? googleAccountId;
+  final String? facebookAccountId;
+  final String? googleAccountId;
   final Role? role; // Assuming role is a String. Adjust based on actual type.
 
   User({
@@ -42,8 +42,8 @@ class User {
       dateOfBirth: json['date_of_birth'] == null
           ? null
           : DateTime.fromMillisecondsSinceEpoch(json['date_of_birth']),
-      facebookAccountId: json['facebook_account_id'] as int?,
-      googleAccountId: json['google_account_id'] as int?,
+      facebookAccountId: (json['facebook_account_id'] as String) ?? '',
+      googleAccountId: (json['google_account_id'] as String) ?? '',
       role: Role.fromJson(json['role']), // This depends on how role is represented in your JSON
     );
   }

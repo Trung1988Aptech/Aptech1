@@ -1,4 +1,4 @@
-package dtos;
+package dtos.requests;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 @Builder
 
-public class StudentRegistrationDTO {
+public class StudentRegistrationRequest {
     private String name;
     private String address;
     private String phoneNumber;

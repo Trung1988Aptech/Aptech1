@@ -4,14 +4,13 @@
  */
 package servlets;
 
-import dtos.StudentRegistrationDTO;
+import dtos.requests.StudentRegistrationRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import lombok.*;
-import dtos.*;
 public class UserServlet extends HttpServlet {
     
     @Override
@@ -26,17 +25,39 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("haha");
         //post here        
-        StudentRegistrationDTO registrationDTO = StudentRegistrationDTO
+        StudentRegistrationRequest registrationDTO = StudentRegistrationRequest
                 .builder()
-                .name(request.getParameter("name"))
-                .address(request.getParameter("address"))
+                .name(request.getParameter("name"))                
                 .className(request.getParameter("className"))
+                .address(request.getParameter("address"))
                 .phoneNumber(request.getParameter("phoneNumber"))
                 .build();
         if (!registrationDTO.isValid()) {
             request.setAttribute("error", "All fields are required!");
-            request.getRequestDispatcher("/registrationForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
+        } else {
+            // Store data in cookies
+            Cookie nameCookie = new Cookie("name", registrationDTO.getName());
+            Cookie classCookie = new Cookie("className", registrationDTO.getClassName());
+            Cookie addressCookie = new Cookie("address", registrationDTO.getAddress());
+            Cookie phoneCookie = new Cookie("phoneNumber", registrationDTO.getPhoneNumber());
+
+            // Setting a max age to cookies (e.g., 24 hours)
+            int maxAge = 24 * 60 * 60;
+            nameCookie.setMaxAge(maxAge);
+            classCookie.setMaxAge(maxAge);
+            addressCookie.setMaxAge(maxAge);
+            phoneCookie.setMaxAge(maxAge);
+
+            // Add cookies to response
+            response.addCookie(nameCookie);
+            response.addCookie(classCookie);
+            response.addCookie(addressCookie);
+            response.addCookie(phoneCookie);
+            
+            request.getRequestDispatcher("/home.jsp").forward(request, response);
+            return;            
         }
 
     }       
