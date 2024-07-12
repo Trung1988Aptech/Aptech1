@@ -32,10 +32,9 @@ function Home() {
   };
 
   const handleEdit = (id) => {
-    // Navigate to the edit page or open a modal for editing
+    
     console.log('Edit product with ID:', id);
-    // For example, you could use navigate from react-router-dom to go to an edit page
-    // navigate(`/edit-product/${id}`);
+    navigate(`/product/${id}/edit`);
   };
 
   // Function to handle page change
