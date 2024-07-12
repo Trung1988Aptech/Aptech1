@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { productService } from './services/productService';
+import { productService } from '../services/productService';
 
-function App() {
+function Home() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10); // You can adjust this value
   
   useEffect(() => {
-    productService.fetchProducts(currentPage, productsPerPage)
+    
+    productService.fetchProducts({ 
+      pageNumber:currentPage, 
+      pageSize:productsPerPage 
+    })
       .then(responseProducts => setProducts(responseProducts))
       .catch(error => setProducts([]));    
   }, [currentPage]);
@@ -87,4 +91,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
