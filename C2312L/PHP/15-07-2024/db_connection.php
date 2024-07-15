@@ -15,7 +15,7 @@ const DATABASE_NAME = "c2312l";
 const PORT = 3307;//docker container
 
 
-function connectToDatabase() {
+function getPDO() {
     try {
         $connection_string = "mysql:host=" . SERVER_NAME 
                                 . ";port=" . PORT 
@@ -55,10 +55,5 @@ function connectToDatabase() {
 }
 */
 
-// Example of using the function
-$pdo = connectToDatabase();
-if ($pdo) {
-    echo "Connected successfully";
-}
 
 ?>
