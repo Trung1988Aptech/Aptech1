@@ -21,13 +21,16 @@ builder.Services.AddCors(options =>
 */
 builder.Services.AddCors();
 /**
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+
 dotnet tool install --global dotnet-ef
 dotnet build
 dotnet ef database update
 dotnet ef migrations add AddSomeEntities --context DataContext
 dotnet ef database update --context DataContext
 
-INSERT INTO Product (Name, Price, Description, Quantity) VALUES
+INSERT INTO Products (Name, Price, Description, Quantity) VALUES
 ('Product 1', 10.99, 'Description for product 1', 100),
 ('Product 2', 20.49, 'Description for product 2', 200),
 ('Product 3', 30.00, 'Description for product 3', 300),
